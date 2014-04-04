@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -173,22 +174,13 @@ public class TileUtilsTest {
         assertThat("there are 4 tags", vfeature.getTagsCount(), equalTo(4));
 
         int i = 0;
-        String key;
-        VectorTile.tile.value value;
 
-        // Note: since Feature.tags is a Map, the order of tag pairs in the vfeature won't necessarily be in the same
-        // order
+        for (Map.Entry<String, Object> entry : feature.getTags().entrySet()) {
+            String key = keys.get(vfeature.getTags(i++));
+            VectorTile.tile.value value = values.get(vfeature.getTags(i++));
 
-        key = keys.get(vfeature.getTags(i++));
-        value = values.get(vfeature.getTags(i++));
-
-        assertThat("keys match", key, equalTo("spinny"));
-        assertThat("values match", value.getStringValue(), equalTo("yes"));
-
-        key = keys.get(vfeature.getTags(i++));
-        value = values.get(vfeature.getTags(i++));
-
-        assertThat("keys match", key, equalTo("horse"));
-        assertThat("values match", value.getStringValue(), equalTo("yes"));
+            assertThat("keys match", key, equalTo(entry.getKey()));
+            assertThat("values match", value.getStringValue(), equalTo(entry.getValue()));
+        }
     }
 }
