@@ -268,11 +268,15 @@ public class TileUtils {
     }
 
     protected static List<Integer> encodeGeometry(Ellipse2D.Double point) {
-        List<Integer> commands = new ArrayList<>();
+        List<Integer> commands = new ArrayList<Integer>();
+        // [00001 001] = command type 1 (MoveTo), length 1
+        commands.add((1 << Commands.BIT_LENGTH) | Commands.MOVE_TO);
 
-        commands.add((1 << Commands.BIT_LENGTH) | Commands.MOVE_TO); // [00001 001] = command type 1 (MoveTo), length 1
-        commands.add((int) point.getX());
-        commands.add((int) point.getY());
+        int x = (int) point.getX();
+        int y = (int) point.getY();
+
+        commands.add((x << 1) ^ (x >> 31));
+        commands.add((y << 1) ^ (y >> 31));
 
         return commands;
     }
